@@ -1,0 +1,10 @@
+Flask
+Flask-sqlalchemy
+pillow
+Flask-migrate
+requests
+WtForms
+email-validator
+Flask-login
+Flask-bcrypt
+pykakasi
