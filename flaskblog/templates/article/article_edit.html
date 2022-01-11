@@ -1,0 +1,16 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-md-center">
+  <form method="POST" enctype="multipart/form-data">
+      {{ form.csrf_token }}
+      {{ render_field(form.title,value=article.title) }}
+      {{ render_field(form.text,cols="50",rows="5",value=article.text) }}
+      {{ render_field(form.picture,value=article.picture) }}
+      {{ form.submit() }}
+  </form>
+</div>
+
+
+{% endblock %}

@@ -50,3 +50,7 @@ class ArticleNewForm(Form):
   user_id=HiddenField()
   submit=SubmitField('投稿')
 
+
+
+class ArticleDeleteForm(Form):
+  submit=SubmitField('削除')

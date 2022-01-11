@@ -5,9 +5,10 @@
   <form method="POST" enctype="multipart/form-data">
       {{ form.csrf_token }}
       {{ render_field(form.name,value=current_user.name) }}
-      {{ render_field(form.avatar,value=current_user.avatar) }}
-      <img id="preview_img" src="{{url_for('static',filename=avatar_path)}}">
+      {{ render_field(form.avatar,value=current_user.avatar,class="avatar_field") }}
+      <img id="preview_img" src="{{url_for('static',filename=avatar_path)}}" width="200px" height="200px">
       {{ form.submit() }}
   </form>
 </div>
+<script src="{{url_for('static',filename='preview.js')}}"></script>
 {% endblock %}

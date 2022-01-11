@@ -23,7 +23,7 @@ class User(UserMixin, db.Model):
   create_at = db.Column(db.DateTime, default=datetime.now)
   update_at = db.Column(db.DateTime, default=datetime.now)
   
-
+  articles = db.relationship("Article", backref="user")
   
 
   def __init__(self, name, email,password,avatar):

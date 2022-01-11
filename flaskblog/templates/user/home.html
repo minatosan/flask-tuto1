@@ -2,11 +2,17 @@
 
 {% block content %}
 <h1>flask blog</h1>
-{{username}}
-{% if current_user.is_authenticated %}
-<img src="{{url_for('static',filename=avatar_path)}}">
-{% else %}
-<img src="{{url_for('static',filename='uploads/sample3.jpg')}}">
-{% endif %}
+
+<div>ユーザー名:{{username}}</div>
+<img src="{{url_for('static',filename=avatar_path)}}" width="200px" height="200px">
+<div><a href="{{url_for('user.user_edit',user_id=current_user.id)}}">ユーザー編集</a></div>
+<h2>投稿した記事の一覧です。</h2>
+{% for article in articles%}
+<ul class="list-group mb-5">
+<li class="list-group-item">記事の名前:{{article.title}}</li>
+<li class="list-group-item">記事の本文:{{article.text}}</li>
+<li class="list-group-item"><a href="{{url_for('article.article_show',article_id=article.id)}}">個別記事へ</a></li>
+</ul>
+{% endfor %}
 
 {% endblock %}

@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{{article.title}}
-{{article.text}}
-<img src="{{url_for('static',filename=picture_path)}}">
+
+<div class="col-lg-4">
+  <div>題名:{{article.title}}</div>
+  <div>本文:{{article.text}}</div>
+  <div>ユーザー名:{{article.user.name}}</div>
+  {% if article.picture%}
+    <img src="{{url_for('static',filename=picture_path)}}">
+  {% endif %}
+  <div><a href="{{url_for('article.article_edit',article_id=article.id)}}">記事の編集</a></div>
+  <form method="POST" action="{{url_for('article.article_delete',article_id=article.id)}}">
+    {{form.csrf_token}}
+    {{form.submit()}}
+  </form>
+</div>
 {% endblock %}

@@ -6,7 +6,7 @@ from flask_login import login_user, login_required, logout_user,current_user
 from flaskblog.models import (
     User,Article
 )
-from flaskblog.forms import LoginForm,RegisterForm,ArticleNewForm,UserEditForm
+from flaskblog.forms import LoginForm,RegisterForm,ArticleNewForm,UserEditForm,ArticleDeleteForm
 
 from flaskblog import db,app
 
@@ -46,7 +46,9 @@ article_view=Blueprint('article',__name__,url_prefix='/article')
 def home():
   avatar_path= 'uploads/' + current_user.avatar
   username=current_user.name
-  return render_template('user/home.html',avatar_path = avatar_path,username=username)
+  articles=Article.query.filter_by(user_id=current_user.id).all()
+
+  return render_template('user/home.html',avatar_path = avatar_path,username=username,articles=articles)
 
 @user_view.route('login/',methods=["GET","POST"])
 def login():
@@ -100,8 +102,6 @@ def logout():
 @login_required
 @user_view.route('edit/<int:user_id>',methods=["GET","POST"])
 def user_edit(user_id):
-  print(current_user.get_id())
-  print(current_user.id)
   if user_id != current_user.id:
     return redirect(url_for('user.home'))
   if user_id != current_user.get_id():
@@ -123,6 +123,7 @@ def user_edit(user_id):
         user.avatar= file
         user.avatar = filename
     db.session.commit()
+    return redirect(url_for('user.home'))
   return render_template('user/user_edit.html',form=form,avatar_path=avatar_path)
 
 
@@ -162,11 +163,43 @@ def article_new():
 @article_view.route('article_index/')
 def article_index():
   articles= Article.query.all()
-  article_picture_path= 'uploads/' 
+  article_picture_path= 'uploads/'
   return render_template('article/article_index.html',articles=articles,article_picture_path=article_picture_path)
 
 @article_view.route('article/<int:article_id>')
 def article_show(article_id):
   article=Article.query.get(article_id)
   picture_path='uploads/'+ article.picture
-  return render_template('article/article_show.html',article=article,picture_path=picture_path)
+  form=ArticleDeleteForm(request.form)
+  return render_template('article/article_show.html',article=article,picture_path=picture_path,form=form)
+
+@article_view.route('article_edit/<int:article_id>',methods=["GET","POST"])
+def article_edit(article_id):
+  form=ArticleNewForm(request.form)
+  article=Article.query.get(article_id)
+  if article.user_id != current_user.id:
+    return redirect(url_for('article.article_show',article_id=article_id))
+  if request.method =="POST" and form.validate():
+    with db.session.begin(subtransactions=True):
+      article.title=form.title.data
+      article.text=form.text.data
+      article.file=request.files['picture'].filename
+      if article.file != None and allwed_file(article.file):
+        file = request.files['picture']
+        ascii_filename = Kakashi.japanese_to_ascii(file.filename)
+        filename = secure_filename(ascii_filename)
+        file.save(os.path.join(UPLOAD_FOLDER,filename))
+        article.picture = filename
+    db.session.commit()
+    return redirect(url_for('article.article_index'))
+  return render_template('article/article_edit.html',form=form,article=article)
+
+@article_view.route('article/delete/<int:article_id>',methods=["GET","POST"])
+def article_delete(article_id):
+  article=Article.query.get(article_id)
+  if request.method=="POST":
+    if article.user_id == current_user.id:
+      with db.session.begin(subtransactions=True):
+        db.session.delete(article)
+      db.session.commit()
+  return redirect(url_for('article.article_index'))
