@@ -143,22 +143,30 @@ def article_new():
     article=Article(
       title = form.title.data,
       text = form.text.data,
-      picture = form.picture.data
+      picture = request.files['picture'].filename,
+      user_id = current_user.id
     )
+    if request.files['picture'] and allwed_file(request.files['picture'].filename):
+       file = request.files['picture']
+       ascii_filename = Kakashi.japanese_to_ascii(file.filename)
+       filename = secure_filename(ascii_filename)
+       file.save(os.path.join(UPLOAD_FOLDER,filename))
+       article.picture = filename
     with db.session.begin(subtransactions=True):
        db.session.add(article)
     db.session.commit()
-    return redirect(url_for('article/article.article_index'))
+    return redirect(url_for('article.article_index'))
   return render_template('article/article_new.html',form=form)
 
 
 @article_view.route('article_index/')
 def article_index():
   articles= Article.query.all()
-  return render_template('article/article_index.html',articles=articles)
+  article_picture_path= 'uploads/' 
+  return render_template('article/article_index.html',articles=articles,article_picture_path=article_picture_path)
 
-#@login_required
-#@article_view.route('article_new/',methods=["GET","POST"])
-#def article_new():
-  #form=ArticleNewForm(request.form)
-  #return render_template('article/article_new.html',form=form)
+@article_view.route('article/<int:article_id>')
+def article_show(article_id):
+  article=Article.query.get(article_id)
+  picture_path='uploads/'+ article.picture
+  return render_template('article/article_show.html',article=article,picture_path=picture_path)

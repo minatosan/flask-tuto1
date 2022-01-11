@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="row">
-  <form method="POST">
+  <form method="POST" enctype="multipart/form-data">
       {{ form.csrf_token }}
       {{ render_field(form.title) }}
       {{ render_field(form.text) }}
@@ -14,4 +14,3 @@
 
 
 {% endblock %}
-{% endmacro %}
