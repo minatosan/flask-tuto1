@@ -5,8 +5,8 @@ services:
     build: .
     ports:
       - "5000:5000"
-    #volumes:
-      #- "./flaskblog:/flaskblog"
+    volumes:
+      - "./flaskblog:/flaskblog/flaskblog"
     tty: true
     #environment:
       #TZ: Asia/Tokyo

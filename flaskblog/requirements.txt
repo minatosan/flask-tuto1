@@ -8,3 +8,4 @@ email-validator
 Flask-login
 Flask-bcrypt
 pykakasi
+ipython

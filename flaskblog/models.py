@@ -7,16 +7,16 @@ from uuid import uuid4
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+    
 
 
 
-sample_pass="password"
 class User(UserMixin, db.Model):
 
   __tablename__ = 'users'
 
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(64), index=True)
+  name = db.Column(db.String(64), index=True,default="名無し")
   email = db.Column(db.String(64), unique=True, index=True)
   password = db.Column(db.String(128))
   avatar = db.Column(db.Text)
@@ -27,7 +27,7 @@ class User(UserMixin, db.Model):
   
 
   def __init__(self, name, email,password,avatar):
-        self.username = name
+        self.name = name
         self.email = email
         self.password = generate_password_hash(password)
         self.avatar = avatar
@@ -43,8 +43,15 @@ class User(UserMixin, db.Model):
   def select_email(cls, email):
       return cls.query.filter_by(email=email).first()
    
+  @classmethod
+  def select_name(cls,name):
+    return cls.query.filter_by(name=name).all()
+
   
 
+  
+#pictureを外部キーにする
+#pictureを多
 class Article(db.Model):
 
   __tablename__ = 'articles'

@@ -31,6 +31,17 @@ class RegisterForm(Form):
     )
     avatar= FileField('アバター:')
     submit = SubmitField('登録')
+    
+    
+    def mail_validate(self, field):
+      if User.select_email(field.data):
+        raise ValidationError('そのメールアドレスは既に登録されています')
+
+class UserEditForm(Form):
+  name = StringField('名前: ', validators=[DataRequired(message="必須項目です")])
+  avatar= FileField('アバター:')
+  submit = SubmitField('更新')
+
 
 class ArticleNewForm(Form):
   title=StringField("題名:" )
@@ -38,3 +49,4 @@ class ArticleNewForm(Form):
   picture=FileField("写真")
   user_id=HiddenField()
   submit=SubmitField('投稿')
+
