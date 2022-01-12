@@ -22,7 +22,7 @@ import pykakasi
 
 UPLOAD_FOLDER = './flaskblog/static/uploads'
 # アップロードされる拡張子の制限
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif','jpeg'])
 
 class Kakashi:
 
@@ -41,13 +41,21 @@ user_view = Blueprint('user', __name__, url_prefix='/user')
 article_view=Blueprint('article',__name__,url_prefix='/article')
 
 
+#flask_loginのtest
+def test_view():
+  print(session)
+  #sessionの値は_user_idから取得している
+  session["_user_id"]=2
+
+
 @login_required
 @user_view.route('home/')
 def home():
-  avatar_path= 'uploads/' + current_user.avatar
+  avatar_path="uploads/sample3.jpg"
+  if current_user.avatar:
+    avatar_path= 'uploads/' + current_user.avatar
   username=current_user.name
   articles=Article.query.filter_by(user_id=current_user.id).all()
-
   return render_template('user/home.html',avatar_path = avatar_path,username=username,articles=articles)
 
 @user_view.route('login/',methods=["GET","POST"])
@@ -78,7 +86,7 @@ def register():
             name = form.name.data,
             email = form.email.data,
             password = form.password.data,
-            avatar = request.files['avatar'].filename
+            avatar = None
         )
     if request.files['avatar'] and allwed_file(request.files['avatar'].filename):
        file = request.files['avatar']

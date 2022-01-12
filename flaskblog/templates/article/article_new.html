@@ -7,10 +7,11 @@
       {{ form.csrf_token }}
       {{ render_field(form.title) }}
       {{ render_field(form.text) }}
-      {{ render_field(form.picture) }}
+      {{ render_field(form.picture,class="picture_field") }}
       {{ form.submit() }}
   </form>
+  <div class="preview-img"></div>
 </div>
 
-
+<script src="{{url_for('static',filename='picture_preview.js')}}"></script>
 {% endblock %}

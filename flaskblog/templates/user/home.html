@@ -6,6 +6,7 @@
 <div>ユーザー名:{{username}}</div>
 <img src="{{url_for('static',filename=avatar_path)}}" width="200px" height="200px">
 <div><a href="{{url_for('user.user_edit',user_id=current_user.id)}}">ユーザー編集</a></div>
+<div><a href="{{url_for('article.article_new')}}">新規記事投稿</a></div>
 <h2>投稿した記事の一覧です。</h2>
 {% for article in articles%}
 <ul class="list-group mb-5">
