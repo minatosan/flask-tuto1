@@ -39,7 +39,8 @@ class Kakashi:
 
 user_view = Blueprint('user', __name__, url_prefix='/user')
 article_view=Blueprint('article',__name__,url_prefix='/article')
-
+#静的画像ファイルのURLを追加
+uploads=Blueprint('uploads',__name__,static_url_path='/static/uploads',static_folder='./static/uploads')
 
 #flask_loginのtest
 def test_view():
@@ -171,15 +172,13 @@ def article_new():
 @article_view.route('article_index/')
 def article_index():
   articles= Article.query.all()
-  article_picture_path= 'uploads/'
-  return render_template('article/article_index.html',articles=articles,article_picture_path=article_picture_path)
+  return render_template('article/article_index.html',articles=articles)
 
 @article_view.route('article/<int:article_id>')
 def article_show(article_id):
   article=Article.query.get(article_id)
-  picture_path='uploads/'+ article.picture
   form=ArticleDeleteForm(request.form)
-  return render_template('article/article_show.html',article=article,picture_path=picture_path,form=form)
+  return render_template('article/article_show.html',article=article,form=form)
 
 @article_view.route('article_edit/<int:article_id>',methods=["GET","POST"])
 def article_edit(article_id):

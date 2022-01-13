@@ -24,9 +24,10 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['UPLOAD_FOLDER'] = './static/uploads'
    
-    from flaskblog.views import user_view,article_view
+    from flaskblog.views import user_view,article_view,uploads
     app.register_blueprint(user_view)
     app.register_blueprint(article_view)
+    app.register_blueprint(uploads)
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)

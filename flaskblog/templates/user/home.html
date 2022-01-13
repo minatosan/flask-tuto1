@@ -1,19 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>flask blog</h1>
 
+<div class="col-6 offset-lg-3">
+<h1>flask blog</h1>
 <div>ユーザー名:{{username}}</div>
-<img src="{{url_for('static',filename=avatar_path)}}" width="200px" height="200px">
+<img src="{{url_for('uploads.static',filename=current_user.avatar)}}" width="200px" height="200px">
 <div><a href="{{url_for('user.user_edit',user_id=current_user.id)}}">ユーザー編集</a></div>
-<div><a href="{{url_for('article.article_new')}}">新規記事投稿</a></div>
+<div class="mb-5"><a href="{{url_for('article.article_new')}}">新規記事投稿</a></div>
 <h2>投稿した記事の一覧です。</h2>
 {% for article in articles%}
 <ul class="list-group mb-5">
 <li class="list-group-item">記事の名前:{{article.title}}</li>
 <li class="list-group-item">記事の本文:{{article.text}}</li>
+{% if article.picture%}
+<img src="{{url_for('uploads.static',filename=article.picture)}}" height="200px" width="200px">
+{% endif %}
 <li class="list-group-item"><a href="{{url_for('article.article_show',article_id=article.id)}}">個別記事へ</a></li>
 </ul>
 {% endfor %}
-
+</div>
 {% endblock %}

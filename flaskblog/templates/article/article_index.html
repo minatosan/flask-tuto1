@@ -6,6 +6,7 @@
 <ul class="list-group mb-5">
 <li class="list-group-item">題名:{{article.title}}</li>
 <li class="list-group-item">投稿者:{{article.user.name}}</li>
+<li class="list-group-item"><img src="{{url_for('uploads.static',filename=article.picture)}}" width="200px" height="200px"></li>
 <li class="list-group-item"><a href="{{url_for('article.article_show',article_id=article.id)}}">個別記事へ</a></li>
 </ul>
 </div>

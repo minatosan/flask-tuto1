@@ -7,7 +7,7 @@
   <div>本文:{{article.text}}</div>
   <div>ユーザー名:{{article.user.name}}</div>
   {% if article.picture%}
-    <img src="{{url_for('static',filename=picture_path)}}">
+    <img src="{{url_for('uploads.static',filename=article.picture)}}">
   {% endif %}
   <div><a href="{{url_for('article.article_edit',article_id=article.id)}}">記事の編集</a></div>
   {% if article.user_id == current_user.id  %}
