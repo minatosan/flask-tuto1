@@ -20,7 +20,7 @@ def create_app():
    
     app.config['SECRET_KEY'] = 'mysite'
     app.config['SQLALCHEMY_DATABASE_URI'] = \
-        'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+        'postgresql+psycopg2://test01:test01@db:5432/test01'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['UPLOAD_FOLDER'] = './static/uploads'
    

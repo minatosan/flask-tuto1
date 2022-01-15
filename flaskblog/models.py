@@ -28,7 +28,7 @@ class User(UserMixin, db.Model):
   def __init__(self, name, email,password,avatar):
         self.name = name
         self.email = email
-        self.password = generate_password_hash(password)
+        self.password = generate_password_hash(password).decode('utf-8')
         self.avatar = avatar
         
   #def set_password(self,password):

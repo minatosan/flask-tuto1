@@ -11,3 +11,11 @@ services:
     #environment:
       #TZ: Asia/Tokyo
     command: python manage.py
+  db:
+    image: postgres:11
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: test01
+      POSTGRES_PASSWORD: test01
+      POSTGRES_DB: test01

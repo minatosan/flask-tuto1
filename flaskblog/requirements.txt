@@ -9,3 +9,4 @@ Flask-login
 Flask-bcrypt
 pykakasi
 ipython
+psycopg2
