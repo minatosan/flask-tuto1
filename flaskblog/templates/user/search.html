@@ -1,5 +1,10 @@
+{% from "_formhelpers.html" import render_field %}
 {% extends 'base.html'%}
 
 {% block content %}
-
+<form class="user_field" method="POST">
+  {{ render_field(form.name,class="search_field") }}
+</form>
+<div class="search_result"></div>
+<script src="{{url_for('static',filename='user_search.js')}}"></script>
 {% endblock %}

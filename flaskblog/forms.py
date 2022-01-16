@@ -42,6 +42,9 @@ class UserEditForm(Form):
   avatar= FileField('アバター:')
   submit = SubmitField('更新')
 
+class UserSearchForm(Form):
+  name=StringField("名前:")
+  submit=SubmitField('検索')
 
 class ArticleNewForm(Form):
   title=StringField("題名:" )

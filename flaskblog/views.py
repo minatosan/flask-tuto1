@@ -1,12 +1,12 @@
 from flask import (
     Blueprint, abort, request, render_template,
-    redirect, url_for, flash,session
+    redirect, url_for, flash,session,jsonify
 )
 from flask_login import login_user, login_required, logout_user,current_user
 from flaskblog.models import (
     User,Article
 )
-from flaskblog.forms import LoginForm,RegisterForm,ArticleNewForm,UserEditForm,ArticleDeleteForm
+from flaskblog.forms import LoginForm,RegisterForm,ArticleNewForm,UserEditForm,ArticleDeleteForm,UserSearchForm
 
 from flaskblog import db,app
 
@@ -52,12 +52,8 @@ def test_view():
 @login_required
 @user_view.route('home/')
 def home():
-  avatar_path="uploads/sample3.jpg"
-  if current_user.avatar:
-    avatar_path= 'uploads/' + current_user.avatar
-  username=current_user.name
   articles=Article.query.filter_by(user_id=current_user.id).all()
-  return render_template('user/home.html',avatar_path = avatar_path,username=username,articles=articles)
+  return render_template('user/home.html',articles=articles)
 
 @user_view.route('login/',methods=["GET","POST"])
 def login():
@@ -106,7 +102,7 @@ def register():
 @user_view.route('logout/')
 def logout():
   logout_user()
-  return redirect(url_for('user.home'))
+  return redirect(url_for('user.login'))
 
 @login_required
 @user_view.route('edit/<int:user_id>',methods=["GET","POST"])
@@ -135,6 +131,22 @@ def user_edit(user_id):
     return redirect(url_for('user.home'))
   return render_template('user/user_edit.html',form=form,avatar_path=avatar_path)
 
+@user_view.route('search/')
+@login_required
+def user_search():
+  form=UserSearchForm(request.form)
+  
+  return render_template('user/search.html',form=form)
+  
+@user_view.route('result/',methods=["POST"])
+def result():
+  users= request.json["keyword"]
+  datas = User.query.filter(User.name.like(f"%{users}%")).all()
+  data=[]
+  #datatime型がJSONでは対応していないので名前だけ抽出
+  for user in datas:
+    data.append(user.name)
+  return jsonify(data)
 
 ##テスト用に作成
 @user_view.route('delete/')

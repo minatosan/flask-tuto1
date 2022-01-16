@@ -4,8 +4,12 @@
 
 <div class="col-6 offset-lg-3">
 <h1>flask blog</h1>
-<div>ユーザー名:{{username}}</div>
+<div>ユーザー名:{{current_user.name}}</div>
+{% if current_user.avatar %}
 <img src="{{url_for('uploads.static',filename=current_user.avatar)}}" width="200px" height="200px">
+{% else%}
+<img src="{{url_for('uploads.static',filename='icon_image.jpeg')}}" width="200px" height="200px">
+{% endif %}
 <div><a href="{{url_for('user.user_edit',user_id=current_user.id)}}">ユーザー編集</a></div>
 <div class="mb-5"><a href="{{url_for('article.article_new')}}">新規記事投稿</a></div>
 <h2>投稿した記事の一覧です。</h2>
