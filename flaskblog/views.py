@@ -66,8 +66,7 @@ def login():
 
 
 def allwed_file(filename):
-    # .があるかどうかのチェックと、拡張子の確認
-    # OKなら１、だめなら0
+    #ファイル軽視の確認,拡張子
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
@@ -86,9 +85,8 @@ def register():
        file = request.files['avatar']
        ascii_filename = Kakashi.japanese_to_ascii(file.filename)
        filename = secure_filename(ascii_filename)
-            # ファイルの保存
+        # ファイルの保存
        file.save(os.path.join(UPLOAD_FOLDER,filename))
-       #user.avatar= file
        user.avatar = filename
     with db.session.begin(subtransactions=True):
         db.session.add(user)
@@ -132,7 +130,6 @@ def user_edit(user_id):
 @login_required
 def user_search():
   form=UserSearchForm(request.form)
-  
   return render_template('user/search.html',form=form)
   
 @user_view.route('result/',methods=["POST"])
