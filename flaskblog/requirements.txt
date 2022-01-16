@@ -10,3 +10,4 @@ Flask-bcrypt
 pykakasi
 ipython
 psycopg2
+flask-wtf

@@ -1,4 +1,4 @@
-from wtforms.form import Form
+from flask_wtf import FlaskForm
 from wtforms.fields import (
     StringField, FileField, PasswordField, SubmitField,TextAreaField,HiddenField
 )
@@ -9,14 +9,14 @@ from flaskblog.models import User
 from flask_login import current_user
 from flask import flash
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
     email = StringField(
         'メール: ', validators=[DataRequired(), Email()]
         )
     password = PasswordField('パスワード: ',validators=[DataRequired()]   )
     submit = SubmitField('ログイン')
   
-class RegisterForm(Form):
+class RegisterForm(FlaskForm):
     email = StringField(
         'メール: ', validators=[DataRequired(), Email('メールアドレスが誤っています')]
     )
@@ -37,16 +37,16 @@ class RegisterForm(Form):
       if User.select_email(field.data):
         raise ValidationError('そのメールアドレスは既に登録されています')
 
-class UserEditForm(Form):
+class UserEditForm(FlaskForm):
   name = StringField('名前: ', validators=[DataRequired(message="必須項目です")])
   avatar= FileField('アバター:')
   submit = SubmitField('更新')
 
-class UserSearchForm(Form):
-  name=StringField("名前:")
+class UserSearchForm(FlaskForm):
+  name=StringField("ユーザー名:")
   submit=SubmitField('検索')
 
-class ArticleNewForm(Form):
+class ArticleNewForm(FlaskForm):
   title=StringField("題名:" )
   text=TextAreaField("本文:",validators=[DataRequired()])
   picture=FileField("写真")
@@ -55,5 +55,5 @@ class ArticleNewForm(Form):
 
 
 
-class ArticleDeleteForm(Form):
+class ArticleDeleteForm(FlaskForm):
   submit=SubmitField('削除')

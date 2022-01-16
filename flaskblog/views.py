@@ -8,11 +8,7 @@ from flaskblog.models import (
 )
 from flaskblog.forms import LoginForm,RegisterForm,ArticleNewForm,UserEditForm,ArticleDeleteForm,UserSearchForm
 
-from flaskblog import db,app
-
-from PIL import Image
-
-from IPython import embed
+from flaskblog import db
 
 from werkzeug.utils import secure_filename
 
@@ -24,6 +20,7 @@ UPLOAD_FOLDER = './flaskblog/static/uploads'
 # アップロードされる拡張子の制限
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif','jpeg'])
 
+#画像ファイルが日本語の場合はローマ字に変換する
 class Kakashi:
 
     kakashi = pykakasi.kakasi()
@@ -42,7 +39,7 @@ article_view=Blueprint('article',__name__,url_prefix='/article')
 #静的画像ファイルのURLを追加
 uploads=Blueprint('uploads',__name__,static_url_path='/static/uploads',static_folder='./static/uploads')
 
-#flask_loginのtest
+#flask_loginのtest用関数
 def test_view():
   print(session)
   #sessionの値は_user_idから取得している
@@ -142,10 +139,8 @@ def user_search():
 def result():
   users= request.json["keyword"]
   datas = User.query.filter(User.name.like(f"%{users}%")).all()
-  data=[]
   #datatime型がJSONでは対応していないので名前だけ抽出
-  for user in datas:
-    data.append(user.name)
+  data=[user.name for user in datas]
   return jsonify(data)
 
 ##テスト用に作成

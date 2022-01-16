@@ -15,7 +15,6 @@ $(document).ready(function(){
   $(".search_field").on("keyup",function(){
     //フォームの値を取得
     var keys = $(".search_field").val();
-    console.log(keys);
    $.ajax({
      type: 'POST',
      url: '/user/result/',

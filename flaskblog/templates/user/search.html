@@ -2,9 +2,12 @@
 {% extends 'base.html'%}
 
 {% block content %}
+<div class="col-6 offset-lg-3 mt-3">
+<h2>こちらの欄から検索できます</h2>
 <form class="user_field" method="POST">
   {{ render_field(form.name,class="search_field") }}
 </form>
-<div class="search_result"></div>
+<div class="search_result mt-5"></div>
+</div>
 <script src="{{url_for('static',filename='user_search.js')}}"></script>
 {% endblock %}
