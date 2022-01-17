@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="row">
-  <form method="POST" enctype="multipart/form-data">
+  <form method="POST" enctype="multipart/form-data" action="{{url_for('article.article_create')}}">
       {{ form.csrf_token }}
       {{ render_field(form.title) }}
       {{ render_field(form.text) }}

@@ -1,10 +1,9 @@
 # __init__.py
 import os
-from flask import Flask,render_template
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-#from flaskblog.models import UPLOAD_FOLDER
 
 login_manager = LoginManager()
 login_manager.login_view = 'app.view'
@@ -17,14 +16,14 @@ app = Flask(__name__)
 
 
 def create_app():
-   
+    
     app.config['SECRET_KEY'] = 'mysite'
     app.config['SQLALCHEMY_DATABASE_URI'] = \
         'postgresql+psycopg2://test01:test01@db:5432/test01'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['UPLOAD_FOLDER'] = './static/uploads'
    
-    from flaskblog.views import user_view,article_view,uploads
+    from flaskblog.views import user_view, article_view, uploads
     app.register_blueprint(user_view)
     app.register_blueprint(article_view)
     app.register_blueprint(uploads)

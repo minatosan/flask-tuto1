@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="row">
-  <form method="POST" enctype="multipart/form-data">
+  <form method="POST" enctype="multipart/form-data" action="{{url_for('user.user_update',user_id=current_user.id)}}">
       {{ form.csrf_token }}
       {{ render_field(form.name,value=current_user.name) }}
       {{ render_field(form.avatar,value=current_user.avatar,class="avatar_field") }}
