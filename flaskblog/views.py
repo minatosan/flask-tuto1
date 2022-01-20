@@ -4,9 +4,9 @@ from flask import (
 )
 from flask_login import login_user, login_required, logout_user, current_user
 
-from flaskblog.models import User, Article
+from flaskblog.models import User, Article, Follow
 
-from flaskblog.forms import LoginForm, RegisterForm, ArticleNewForm, UserEditForm, ArticleDeleteForm, UserSearchForm
+from flaskblog.forms import LoginForm, RegisterForm, ArticleNewForm, UserEditForm, ArticleDeleteForm, UserSearchForm, FollowForm
 
 from flaskblog import db
 
@@ -187,6 +187,22 @@ def user_update(user_id):
     return redirect(url_for('user.home'))
 
 
+@user_view.route('show/<int:user_id>')
+def user_show(user_id):
+    # user_idからuserを取得
+    user = User.query.get(user_id)
+    form = FollowForm(request.form)
+    # 自分のページにアクセスする場合はhome画面に遷移
+    if user_id == current_user.id:
+        return redirect(url_for('user.home'))
+    # 投稿した記事をuser_idで取得
+    articles = Article.query.filter_by(user_id=user.id).all()
+    # followしているかどうかを確認
+    follow = Follow.query.filter_by(to_user_id=user.id, from_user_id=current_user.id).first()
+    return render_template('user/user_show.html', user=user, articles=articles, form=form, follow=follow)
+
+
+# ユーザー検索画面
 @user_view.route('search/')
 @login_required
 def user_search():
@@ -195,14 +211,15 @@ def user_search():
     return render_template('user/search.html', form=form)
 
 
+#  ユーザー検索,ajaxでの送信先
 @user_view.route('result/', methods=["POST"])
 def result():
     # ajaxで送信されてきたjsonデータを取得
     users = request.json["keyword"]
     # 該当のデータをUserテーブルから取り出す
     datas = User.query.filter(User.id != current_user.id, User.name.like(f"%{users}%")).all()
-    # datatime型がJSONでは対応していないので名前だけ抽出 user_idも同時に取得→フォローに必要
-    # ここでフォローしているか否かの判定も行う
+    # datatime型がJSONでは対応していないので名前だけ抽出 user_idも同時に取得
+    # 内包表記で多次元配列を作成
     data = [(user.name, user.id) for user in datas]
     return jsonify(data)
 
@@ -210,8 +227,31 @@ def result():
 @user_view.route('follow/<int:user_id>')
 @login_required
 def follow(user_id):
+    #  user_idから指定のuserをselect
+    user = User.query.get(user_id)
+    # friendのインスタンスを作成
+    friend = Follow(
+        to_user_id=user.id,
+        from_user_id=current_user.id
+    )
+    with db.session.begin(subtransactions=True):
+        db.session.add(friend)
+    # dbの変更を反映
+    db.session.commit()
+    return redirect(url_for('user.home'))
 
-    return render_template("user/home.html")
+
+# 友達一覧の画面
+@user_view.route('friend/')
+@login_required
+def friend():
+    # 友達一覧を取得,from_user_idはfollowの送信元なのでcurrent_userで指定
+    friends = Follow.query.filter_by(from_user_id=current_user.id).all()
+    # フォロー数のカウント
+    follow_count = Follow.query.filter_by(from_user_id=current_user.id).count()
+    # フォロワー数のカウント
+    follower_count = Follow.query.filter_by(to_user_id=current_user.id).count()
+    return render_template("user/friends.html", friends=friends, follow_count=follow_count, follower_count=follower_count)
 
 
 # テスト用に作成

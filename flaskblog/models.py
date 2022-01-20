@@ -1,6 +1,6 @@
 from flaskblog import db, login_manager
 from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_login import UserMixin, current_user
+from flask_login import UserMixin
 from datetime import datetime
 
 
@@ -23,6 +23,7 @@ class User(UserMixin, db.Model):
     update_at = db.Column(db.DateTime, default=datetime.now)
     # 記事用にrelationshipを定義 →user1:article多
     articles = db.relationship("Article", backref="user")
+    # follows = db.relationship("Follow", backref="user")
     
     # userクラスのインスタンスを定義
     def __init__(self, name, email, password, avatar):
@@ -65,7 +66,7 @@ class Article(db.Model):
 
 class Follow(db.Model):
 
-    __tablename__ = 'friends'
+    __tablename__ = 'follows'
 
     id = db.Column(db.Integer, primary_key=True)
     to_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), index=True)
@@ -75,6 +76,4 @@ class Follow(db.Model):
         self.from_user_id = from_user_id
         self.to_user_id = to_user_id
 
-    @classmethod
-    def following(cls):
-        cls.query.filter_by(from_user_id=current_user.id)
+    

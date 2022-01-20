@@ -66,5 +66,8 @@ class ArticleNewForm(FlaskForm):
 
 
 class ArticleDeleteForm(FlaskForm):
-
     submit = SubmitField('削除')
+
+
+class FollowForm(FlaskForm):
+    submit = SubmitField('フォロー')

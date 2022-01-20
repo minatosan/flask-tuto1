@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-6 offset-lg-3">
+  <h1>flask blog</h1>
+  <div>ユーザー名:{{user.name}}</div>
+  {% if user.avatar %}
+  <img src="{{url_for('uploads.static',filename=user.avatar)}}" width="200px" height="200px">
+  {% else%}
+  <img src="{{url_for('uploads.static',filename='icon_image.jpeg')}}" width="200px" height="200px">
+  {% endif %}
+  {% if not follow %}
+  <form action="{{url_for('user.follow',user_id=user.id)}}">
+    {{form.csrf_token}}
+    {{form.submit()}}
+  </form>
+  {% else %}
+  この人は既にフォローしています。
+  {% endif %}
+  <h2>投稿した記事の一覧です。</h2>
+  {% for article in articles%}
+  <ul class="list-group mb-5">
+  <li class="list-group-item">記事の名前:{{article.title}}</li>
+  <li class="list-group-item">記事の本文:{{article.text}}</li>
+  {% if article.picture%}
+  <img src="{{url_for('uploads.static',filename=article.picture)}}" height="200px" width="200px">
+  {% endif %}
+  <li class="list-group-item"><a href="{{url_for('article.article_show',article_id=article.id)}}">個別記事へ</a></li>
+  </ul>
+  {% endfor %}
+</div>
+
+
+{% endblock %}

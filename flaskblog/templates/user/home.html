@@ -9,8 +9,9 @@
 {% else%}
 <img src="{{url_for('uploads.static',filename='icon_image.jpeg')}}" width="200px" height="200px">
 {% endif %}
-<div><a href="{{url_for('user.user_edit',user_id=current_user.id)}}">ユーザー編集</a></div>
-<div class="mb-5"><a href="{{url_for('article.article_new')}}">新規記事投稿</a></div>
+<div class="mb-2"><a href="{{url_for('user.user_edit',user_id=current_user.id)}}">ユーザー編集</a></div>
+<div class="mb-2"><a href="{{url_for('article.article_new')}}">新規記事投稿</a></div>
+<div class="mb-5"><a href="{{url_for('user.friend')}}">フォロー一覧</a></div>
 <h2>投稿した記事の一覧です。</h2>
 {% for article in articles%}
 <ul class="list-group mb-5">
