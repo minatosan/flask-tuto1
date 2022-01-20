@@ -4,6 +4,8 @@ $(document).ready(function(){
   var searchlist=$(".search_result");
   //HTML作成関数
   function appendHTML(data){
+    //if文で条件分岐
+    
     var HTML=`
     <ul class="list-group mb-5">
       <li class="list-group-item">${data}</li>
