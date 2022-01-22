@@ -12,3 +12,5 @@ ipython
 psycopg2
 flask-wtf
 flake8
+flask-dance
+python-dotenv
