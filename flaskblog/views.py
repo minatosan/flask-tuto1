@@ -198,7 +198,7 @@ def user_show(user_id):
     # 投稿した記事をuser_idで取得
     articles = Article.query.filter_by(user_id=user.id).all()
     # followしているかどうかを確認
-    follow = Follow.query.filter_by(to_user_id=user.id, from_user_id=current_user.id).first()
+    follow = Follow.query.filter_by(followed_id=user.id, follower_id=current_user.id).first()
     return render_template('user/user_show.html', user=user, articles=articles, form=form, follow=follow)
 
 
@@ -230,12 +230,13 @@ def follow(user_id):
     #  user_idから指定のuserをselect
     user = User.query.get(user_id)
     # friendのインスタンスを作成
-    friend = Follow(
-        to_user_id=user.id,
-        from_user_id=current_user.id
+    follow = Follow(
+        followed_id=user.id,
+        follower_id=current_user.id
     )
+    print(follow)
     with db.session.begin(subtransactions=True):
-        db.session.add(friend)
+        db.session.add(follow)
     # dbの変更を反映
     db.session.commit()
     return redirect(url_for('user.home'))
@@ -245,12 +246,14 @@ def follow(user_id):
 @user_view.route('friend/')
 @login_required
 def friend():
-    # 友達一覧を取得,from_user_idはfollowの送信元なのでcurrent_userで指定
-    friends = Follow.query.filter_by(from_user_id=current_user.id).all()
+    # 友達一覧を取得,follower_idはfollowの送信元なのでcurrent_userで指定
+    friends = Follow.query.filter_by(follower_id=current_user.id).all()
+    print(friends[0])
+    print(friends[0].user)
     # フォロー数のカウント
-    follow_count = Follow.query.filter_by(from_user_id=current_user.id).count()
+    follow_count = Follow.query.filter_by(follower_id=current_user.id).count()
     # フォロワー数のカウント
-    follower_count = Follow.query.filter_by(to_user_id=current_user.id).count()
+    follower_count = Follow.query.filter_by(followed_id=current_user.id).count()
     return render_template("user/friends.html", friends=friends, follow_count=follow_count, follower_count=follower_count)
 
 
@@ -260,8 +263,12 @@ def friend():
 def user_delete():
     # current_userのidを検索
     user = User.query.filter_by(id=current_user.get_id()).first()
+    followed = Follow.query.filter_by(followed_id=current_user.get_id()).all()
     with db.session.begin(subtransactions=True):
         # DBからデータを削除
+        # followedはリスト型なのでfor文で削除を行う
+        for object in followed:
+            db.session.delete(object)
         db.session.delete(user)
     # DBに変更を反映させる
     db.session.commit()

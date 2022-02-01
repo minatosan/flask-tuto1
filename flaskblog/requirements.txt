@@ -4,7 +4,6 @@ pillow
 Flask-migrate
 requests
 WtForms
-email-validator
 Flask-login
 Flask-bcrypt
 pykakasi
@@ -14,3 +13,4 @@ flask-wtf
 flake8
 flask-dance
 python-dotenv
+gunicorn

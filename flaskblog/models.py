@@ -7,7 +7,19 @@ from datetime import datetime
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
-    
+
+
+class Follow(db.Model):
+
+    __tablename__ = 'follows'
+    # __table_args__ = {'extend_existing': True}
+    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+
+    def __init__(self, follower_id, followed_id):
+        self.follower_id = follower_id
+        self.followed_id = followed_id
+
 
 # ユーザー用のモデルクラス
 class User(UserMixin, db.Model):
@@ -22,9 +34,20 @@ class User(UserMixin, db.Model):
     create_at = db.Column(db.DateTime, default=datetime.now)
     update_at = db.Column(db.DateTime, default=datetime.now)
     # 記事用にrelationshipを定義 →user1:article多
-    articles = db.relationship("Article", backref="user")
-    # follows = db.relationship("Follow", backref="user")
-    
+    articles = db.relationship("Article", backref="user", cascade="all, delete, delete-orphan")
+    # フォロワー用のrelationshipを定義
+    followers = db.relationship('Follow',
+                                foreign_keys=[Follow.followed_id],
+                                backref=db.backref('followed', lazy='joined'),
+                                lazy='dynamic',
+                                cascade='all, delete-orphan')
+    # フォローしている側のrelationshipを定義
+    followed = db.relationship('Follow',
+                               foreign_keys=[Follow.follower_id],
+                               backref=db.backref('follower', lazy='joined'),
+                               lazy='dynamic',
+                               cascade='all, delete-orphan')
+
     # userクラスのインスタンスを定義
     def __init__(self, name, email, password, avatar):
         self.name = name
@@ -63,17 +86,3 @@ class Article(db.Model):
         self.picture = picture
         self.user_id = user_id
 
-
-class Follow(db.Model):
-
-    __tablename__ = 'follows'
-
-    id = db.Column(db.Integer, primary_key=True)
-    to_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), index=True)
-    from_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), index=True)
-
-    def __init__(self, from_user_id, to_user_id):
-        self.from_user_id = from_user_id
-        self.to_user_id = to_user_id
-
-    
