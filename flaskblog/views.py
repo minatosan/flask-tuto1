@@ -1,6 +1,6 @@
 from flask import (
     Blueprint, request, render_template,
-    redirect, url_for, session, jsonify, flash
+    redirect, url_for, jsonify, flash
 )
 from flask_login import login_user, login_required, logout_user, current_user
 
@@ -45,12 +45,6 @@ user_view = Blueprint('user', __name__, url_prefix='/user')
 article_view = Blueprint('article', __name__, url_prefix='/article')
 # 静的画像ファイルのURLを追加
 uploads = Blueprint('uploads', __name__, static_url_path='/static/uploads', static_folder='./static/uploads')
-
-
-# flask_loginのtest用関数
-def test_view():
-    print(session)
-    session["_user_id"] = 2
 
 
 @login_required
