@@ -50,7 +50,6 @@ uploads = Blueprint('uploads', __name__, static_url_path='/static/uploads', stat
 # flask_loginのtest用関数
 def test_view():
     print(session)
-    # sessionの値は_user_idから取得している
     session["_user_id"] = 2
 
 
@@ -94,6 +93,7 @@ def user_login():
 
 def allwed_file(filename):
     # ファイル軽視の確認,拡張子
+    # rsplitメソッドでファイルの.の部分を区切りに拡張子とファイル名を分割
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
